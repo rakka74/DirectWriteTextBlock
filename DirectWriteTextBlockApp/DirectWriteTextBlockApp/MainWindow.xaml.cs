@@ -20,9 +20,21 @@ namespace DirectWriteTextBlockApp
     /// </summary>
     public partial class MainWindow : Window
     {
+        class ListViewItem
+        {
+            public string text { get; set; }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
+
+            var itemsSrc = new List<ListViewItem>();
+            for (int ni = 0; ni < 1000; ++ni)
+            {
+                itemsSrc.Add(new ListViewItem() { text = ni.ToString() });
+            }
+            listView.DataContext = itemsSrc;
         }
     }
 }
