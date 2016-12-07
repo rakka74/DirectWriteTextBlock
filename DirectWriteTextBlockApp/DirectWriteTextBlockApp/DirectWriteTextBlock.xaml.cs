@@ -1,5 +1,7 @@
-﻿using System;
+﻿using DirectWriteTextBlockLibNS;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -43,14 +46,36 @@ namespace DirectWriteTextBlockApp
         }
         #endregion
 
+        DirectWriteTextBlockLib _dwTextBlockLib;
+
         public DirectWriteTextBlock()
         {
             InitializeComponent();
         }
 
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            _dwTextBlockLib = new DirectWriteTextBlockLib();
+
+            string fontFamilyName;
+            this.FontFamily.FamilyNames.TryGetValue(XmlLanguage.GetLanguage("en-us"), out fontFamilyName);
+            _dwTextBlockLib.setFontFamilyName(fontFamilyName);
+            _dwTextBlockLib.setFontSize((float)this.FontSize);
+
+            this.textPropertyChanged(this.Text);
+        }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            _dwTextBlockLib.Dispose();
+            _dwTextBlockLib = null;
+        }
+
         void textPropertyChanged(string newText)
         {
             this.textBlock.Text = newText;
+            //Debug.WriteLine(newText);
         }
+
     }
 }

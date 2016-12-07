@@ -2,12 +2,28 @@
 
 #pragma once
 
+#include <string>
+#include <Dwrite.h>
+
 using namespace System;
 
-namespace DirectWriteTextBlockLib {
+namespace DirectWriteTextBlockLibNS {
 
-	public ref class Class1
+	public ref class DirectWriteTextBlockLib
 	{
-		// TODO: このクラスの、ユーザーのメソッドをここに追加してください。
+	public:
+		DirectWriteTextBlockLib();
+		~DirectWriteTextBlockLib();
+
+		void setText(System::String^ text);
+		void setFontFamilyName(System::String^ fontFamilyName);
+		void setFontSize(float size);
+		void setFontWeight(System::Windows::FontWeight fontWeight);
+
+	private:
+		std::wstring* _text;
+		std::wstring* _fontFamilyName;
+		float _fontSize;
+		DWRITE_FONT_WEIGHT _fontWeight;
 	};
 }
