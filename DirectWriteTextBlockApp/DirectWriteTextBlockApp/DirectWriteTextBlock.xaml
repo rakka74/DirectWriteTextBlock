@@ -4,9 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DirectWriteTextBlockApp"
+             xmlns:dx="clr-namespace:Microsoft.Wpf.Interop.DirectX;assembly=Microsoft.Wpf.Interop.DirectX"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" Loaded="UserControl_Loaded" Unloaded="UserControl_Unloaded">
-    <Grid>
+    <StackPanel Orientation="Horizontal">
         <TextBlock x:Name="textBlock" />
-    </Grid>
+        <Grid x:Name="grid">
+            <Image x:Name="image" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="None">
+                <Image.Source>
+                    <dx:D3D11Image x:Name="InteropImage" />
+                </Image.Source>
+            </Image>
+        </Grid>
+    </StackPanel>
 </UserControl>

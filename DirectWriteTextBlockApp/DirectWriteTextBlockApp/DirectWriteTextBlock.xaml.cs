@@ -74,7 +74,7 @@ namespace DirectWriteTextBlockApp
         void textPropertyChanged(string newText)
         {
             this.textBlock.Text = newText;
-            //Debug.WriteLine(newText);
+            Debug.WriteLine(newText);
         }
 
     }
