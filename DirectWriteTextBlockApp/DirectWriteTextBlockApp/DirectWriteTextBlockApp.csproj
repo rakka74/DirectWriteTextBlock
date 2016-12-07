@@ -102,6 +102,12 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DirectWriteTextBlockLib\DirectWriteTextBlockLib.vcxproj">
+      <Project>{ac572829-a093-4f50-9e3a-fb96ab8ea062}</Project>
+      <Name>DirectWriteTextBlockLib</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
