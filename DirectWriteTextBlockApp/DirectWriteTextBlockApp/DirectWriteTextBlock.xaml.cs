@@ -74,7 +74,18 @@ namespace DirectWriteTextBlockApp
         void textPropertyChanged(string newText)
         {
             this.textBlock.Text = newText;
-            Debug.WriteLine(newText);
+
+            if (null != _dwTextBlockLib)
+            {
+                _dwTextBlockLib.setText(newText);
+                Size textSize = _dwTextBlockLib.getTextSize();
+                //Debug.WriteLine("{0}, w={1}, h={2}", newText, textSize.Width, textSize.Height);
+
+                // サイズ変更
+                grid.Width = textSize.Width;
+                grid.Height = textSize.Height;
+                InteropImage.SetPixelSize((int)Math.Ceiling(textSize.Width), (int)Math.Ceiling(textSize.Height));
+            }
         }
 
     }

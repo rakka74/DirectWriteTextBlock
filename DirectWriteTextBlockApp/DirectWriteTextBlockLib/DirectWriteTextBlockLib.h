@@ -20,7 +20,11 @@ namespace DirectWriteTextBlockLibNS {
 		void setFontSize(float size);
 		void setFontWeight(System::Windows::FontWeight fontWeight);
 
+		System::Windows::Size getTextSize();
+
 	private:
+		IDWriteFactory* _pDWriteFactory; // 全てのインスタンスで共有したい
+
 		std::wstring* _text;
 		std::wstring* _fontFamilyName;
 		float _fontSize;
