@@ -46,15 +46,21 @@ namespace DirectWriteTextBlockApp
         }
         #endregion
 
-        DirectWriteTextBlockLib _dwTextBlockLib = new DirectWriteTextBlockLib();
+        DirectWriteTextBlockLib _dwTextBlockLib;
 
         public DirectWriteTextBlock()
         {
             InitializeComponent();
+
+            _dwTextBlockLib = new DirectWriteTextBlockLib();
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+#if false // リサイクルされるのでコンストラクタでnewするように変更。
+            DirectWriteTextBlockLib _dwTextBlockLib = new DirectWriteTextBlockLib();
+#endif
+
             string fontFamilyName;
             this.FontFamily.FamilyNames.TryGetValue(XmlLanguage.GetLanguage("en-us"), out fontFamilyName);
             _dwTextBlockLib.setFontFamilyName(fontFamilyName);
@@ -67,8 +73,10 @@ namespace DirectWriteTextBlockApp
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
+#if false // 
             _dwTextBlockLib.Dispose();
             _dwTextBlockLib = null;
+#endif
         }
 
         private void InitializeRendering()
@@ -85,12 +93,13 @@ namespace DirectWriteTextBlockApp
         void textPropertyChanged(string newText)
         {
             this.textBlock.Text = newText;
+            Debug.WriteLine(newText);
 
             if (null != _dwTextBlockLib)
             {
                 _dwTextBlockLib.setText(newText);
                 Size textSize = _dwTextBlockLib.getTextSize();
-                Debug.WriteLine("{0}, w={1}, h={2}", newText, textSize.Width, textSize.Height);
+                //Debug.WriteLine("{0}, w={1}, h={2}", newText, textSize.Width, textSize.Height);
 
                 // サイズ変更
                 grid.Width = textSize.Width;
