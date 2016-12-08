@@ -17,11 +17,16 @@ DirectWriteTextBlockLib::DirectWriteTextBlockLib()
 
 	pin_ptr<IDWriteFactory*> pinDWriteFactory = &_pDWriteFactory;
 	DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), (IUnknown**)pinDWriteFactory);
+
+	pin_ptr<ID2D1Factory*> pinD2DFactory = &_pD2DFactory;
+	D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, (ID2D1Factory**)pinD2DFactory);
 }
 
 DirectWriteTextBlockLib::~DirectWriteTextBlockLib()
 {
 	ReleaseInterface(_pDWriteFactory);
+	ReleaseInterface(_pD2DFactory);
+	ReleaseInterface(_pRenderTarget);
 
 	delete _text;
 	delete _fontFamilyName;
@@ -89,4 +94,31 @@ System::Windows::Size DirectWriteTextBlockLib::getTextSize()
 	ReleaseInterface(pTextFormat);
 
 	return System::Windows::Size(textMetrics.width, textMetrics.height);
+}
+
+void DirectWriteTextBlockLib::render(IntPtr pResource, bool isNewSurface)
+{
+	if (isNewSurface) {
+		//ReleaseInterface(_pBrush);
+		ReleaseInterface(_pRenderTarget);
+
+		D2D1_RENDER_TARGET_PROPERTIES rtp;
+		ZeroMemory(&rtp, sizeof(rtp));
+		rtp.type = D2D1_RENDER_TARGET_TYPE_HARDWARE;
+		rtp.pixelFormat = D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED);
+
+		IDXGISurface* pDXGISurface = (IDXGISurface*)pResource.ToPointer();
+
+		pin_ptr<ID2D1RenderTarget*> pinRenderTarget = &_pRenderTarget;
+		_pD2DFactory->CreateDxgiSurfaceRenderTarget(pDXGISurface, &rtp, pinRenderTarget);
+
+		//pin_ptr<ID2D1SolidColorBrush*> pinBrush = &_pBrush;
+		//_pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(0.0F, 0.0F, 0.0F), pinBrush);
+	}
+
+	_pRenderTarget->BeginDraw();
+
+	_pRenderTarget->Clear(D2D1::ColorF(1.0f, 0.0f, 0.0f, 1.0f));
+
+	_pRenderTarget->EndDraw();
 }

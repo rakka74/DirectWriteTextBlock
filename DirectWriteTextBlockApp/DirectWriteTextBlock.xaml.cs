@@ -46,7 +46,7 @@ namespace DirectWriteTextBlockApp
         }
         #endregion
 
-        DirectWriteTextBlockLib _dwTextBlockLib;
+        DirectWriteTextBlockLib _dwTextBlockLib = new DirectWriteTextBlockLib();
 
         public DirectWriteTextBlock()
         {
@@ -55,20 +55,31 @@ namespace DirectWriteTextBlockApp
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            _dwTextBlockLib = new DirectWriteTextBlockLib();
-
             string fontFamilyName;
             this.FontFamily.FamilyNames.TryGetValue(XmlLanguage.GetLanguage("en-us"), out fontFamilyName);
             _dwTextBlockLib.setFontFamilyName(fontFamilyName);
             _dwTextBlockLib.setFontSize((float)this.FontSize);
 
             this.textPropertyChanged(this.Text);
+
+            this.InitializeRendering();
         }
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
             _dwTextBlockLib.Dispose();
             _dwTextBlockLib = null;
+        }
+
+        private void InitializeRendering()
+        {
+            InteropImage.WindowOwner = (new System.Windows.Interop.WindowInteropHelper(Window.GetWindow(this))).Handle;
+            InteropImage.OnRender = (surface, isNewSurface) => {
+                _dwTextBlockLib.render(surface, isNewSurface);
+            };
+
+            // Start rendering now!
+            InteropImage.RequestRender();
         }
 
         void textPropertyChanged(string newText)
@@ -79,7 +90,7 @@ namespace DirectWriteTextBlockApp
             {
                 _dwTextBlockLib.setText(newText);
                 Size textSize = _dwTextBlockLib.getTextSize();
-                //Debug.WriteLine("{0}, w={1}, h={2}", newText, textSize.Width, textSize.Height);
+                Debug.WriteLine("{0}, w={1}, h={2}", newText, textSize.Width, textSize.Height);
 
                 // サイズ変更
                 grid.Width = textSize.Width;

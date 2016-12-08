@@ -4,6 +4,7 @@
 
 #include <string>
 #include <Dwrite.h>
+#include <d2d1.h>
 
 using namespace System;
 
@@ -21,9 +22,12 @@ namespace DirectWriteTextBlockLibNS {
 		void setFontWeight(System::Windows::FontWeight fontWeight);
 
 		System::Windows::Size getTextSize();
+		void render(IntPtr, bool);
 
 	private:
 		IDWriteFactory* _pDWriteFactory; // 全てのインスタンスで共有したい
+		ID2D1Factory* _pD2DFactory; // 全てのインスタンスで共有したい
+		ID2D1RenderTarget* _pRenderTarget;
 
 		std::wstring* _text;
 		std::wstring* _fontFamilyName;
