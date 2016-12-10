@@ -7,14 +7,11 @@
              xmlns:dx="clr-namespace:Microsoft.Wpf.Interop.DirectX;assembly=Microsoft.Wpf.Interop.DirectX"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" Loaded="UserControl_Loaded" Unloaded="UserControl_Unloaded">
-    <StackPanel Orientation="Horizontal">
-        <TextBlock x:Name="textBlock" />
-        <Grid x:Name="grid">
-            <Image x:Name="image" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="None">
-                <Image.Source>
-                    <dx:D3D11Image x:Name="InteropImage" />
-                </Image.Source>
-            </Image>
-        </Grid>
-    </StackPanel>
+    <Grid x:Name="grid">
+        <Image x:Name="image" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="None">
+            <Image.Source>
+                <dx:D3D11Image x:Name="InteropImage" />
+            </Image.Source>
+        </Image>
+    </Grid>
 </UserControl>

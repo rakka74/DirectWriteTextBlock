@@ -7,6 +7,7 @@
 #define ReleaseInterface(x) { if (NULL != x) { int refCount = x->Release(); /*Debug::WriteLine(refCount);*/ x = NULL; }}
 
 using namespace DirectWriteTextBlockLibNS;
+using namespace System::Diagnostics;
 
 DirectWriteTextBlockLib::DirectWriteTextBlockLib()
 {
@@ -27,6 +28,7 @@ DirectWriteTextBlockLib::~DirectWriteTextBlockLib()
 	ReleaseInterface(_pDWriteFactory);
 	ReleaseInterface(_pD2DFactory);
 	ReleaseInterface(_pRenderTarget);
+	ReleaseInterface(_pBrush);
 
 	delete _text;
 	delete _fontFamilyName;
@@ -99,7 +101,7 @@ System::Windows::Size DirectWriteTextBlockLib::getTextSize()
 void DirectWriteTextBlockLib::render(IntPtr pResource, bool isNewSurface)
 {
 	if (isNewSurface) {
-		//ReleaseInterface(_pBrush);
+		ReleaseInterface(_pBrush);
 		ReleaseInterface(_pRenderTarget);
 
 		D2D1_RENDER_TARGET_PROPERTIES rtp;
@@ -112,13 +114,34 @@ void DirectWriteTextBlockLib::render(IntPtr pResource, bool isNewSurface)
 		pin_ptr<ID2D1RenderTarget*> pinRenderTarget = &_pRenderTarget;
 		_pD2DFactory->CreateDxgiSurfaceRenderTarget(pDXGISurface, &rtp, pinRenderTarget);
 
-		//pin_ptr<ID2D1SolidColorBrush*> pinBrush = &_pBrush;
-		//_pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(0.0F, 0.0F, 0.0F), pinBrush);
+		pin_ptr<ID2D1SolidColorBrush*> pinBrush = &_pBrush;
+		_pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(0.0F, 0.0F, 0.0F), pinBrush);
 	}
 
 	_pRenderTarget->BeginDraw();
 
-	_pRenderTarget->Clear(D2D1::ColorF(1.0f, 0.0f, 0.0f, 1.0f));
+	_pRenderTarget->Clear(D2D1::ColorF(1.0f, 1.0f, 1.0f, 0.0f)); // transparent
+
+	IDWriteTextFormat* pTextFormat;
+	_pDWriteFactory->CreateTextFormat(
+		_fontFamilyName->c_str(),
+		NULL,                       // Font collection (NULL sets it to use the system font collection).
+		_fontWeight,
+		DWRITE_FONT_STYLE_NORMAL,
+		DWRITE_FONT_STRETCH_NORMAL,
+		_fontSize,
+		L"en-us",
+		&pTextFormat
+	);
+	pTextFormat->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
+
+	IDWriteTextLayout* pTextLayout;
+	_pDWriteFactory->CreateTextLayout(_text->c_str(), (UINT32)_text->length(), pTextFormat, 10, 10, &pTextLayout);
+
+	_pRenderTarget->DrawTextLayout(D2D1::Point2F(0, 0), pTextLayout, _pBrush);
 
 	_pRenderTarget->EndDraw();
+
+	ReleaseInterface(pTextLayout);
+	ReleaseInterface(pTextFormat);
 }

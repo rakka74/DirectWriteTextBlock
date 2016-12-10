@@ -32,7 +32,7 @@ namespace DirectWriteTextBlockApp
             var itemsSrc = new List<ListViewItem>();
             for (int ni = 0; ni < 1000; ++ni)
             {
-                itemsSrc.Add(new ListViewItem() { text = ni.ToString() });
+                itemsSrc.Add(new ListViewItem() { text = string.Format("item:{0}", ni) } );
             }
             listView.DataContext = itemsSrc;
         }

@@ -55,9 +55,16 @@ namespace DirectWriteTextBlockApp
             _dwTextBlockLib = new DirectWriteTextBlockLib();
         }
 
+        ~DirectWriteTextBlock()
+        {
+            Debug.WriteLine("~DirectWriteTextBlock");
+            _dwTextBlockLib.Dispose();
+            _dwTextBlockLib = null;
+        }
+
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-#if false // リサイクルされるのでコンストラクタでnewするように変更。
+#if false // リサイクルされるのでコンストラクタでnewして、デストラクタでdisposeするように変更。
             DirectWriteTextBlockLib _dwTextBlockLib = new DirectWriteTextBlockLib();
 #endif
 
@@ -73,7 +80,7 @@ namespace DirectWriteTextBlockApp
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
-#if false // 
+#if false // リサイクルされるのでコンストラクタでnewして、デストラクタでdisposeするように変更。
             _dwTextBlockLib.Dispose();
             _dwTextBlockLib = null;
 #endif
@@ -92,7 +99,7 @@ namespace DirectWriteTextBlockApp
 
         void textPropertyChanged(string newText)
         {
-            this.textBlock.Text = newText;
+            //this.textBlock.Text = newText;
             Debug.WriteLine(newText);
 
             if (null != _dwTextBlockLib)
